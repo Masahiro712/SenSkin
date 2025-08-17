@@ -1,0 +1,22 @@
+<h1>LIFESTYLE</h1>
+<h3>一覧ページ</h3>
+<% if user_signed_in? %>
+  <%= link_to "新規投稿へ", new_lifestyle_path %>
+<% end %>
+<div class="reviews-container">
+  <% @lifestyles.each do |l| %>
+    <div class="review">
+      <%= image_tag l.image_url, size: "250x200" if l.image? %>
+      <p><%= l.title %></p>
+      <p><%= l.comment %></p>
+      <p><%= l.user.email %></p>
+      <%= link_to "詳細へ", lifestyle_path(l.id) %>
+    </div>
+
+    <% if current_user == l.user %>
+      <p><%= link_to "編集する", edit_lifestyle_path(l.id)%></p>
+      <%= button_to "削除する", lifestyle_path(l.id), method: :delete %>
+    <% end %>
+  <% end %>
+</div>
+<%= link_to "ITEM一覧へ", reviews_path %>

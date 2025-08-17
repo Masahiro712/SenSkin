@@ -1,0 +1,2 @@
+module LikeasHelper
+end

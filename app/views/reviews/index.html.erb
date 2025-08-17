@@ -1,0 +1,30 @@
+<h1>ITEM</h1>
+<h3>一覧ページ</h3>
+<% if user_signed_in? %>
+  <%= link_to "新規投稿へ", new_review_path %>
+<% end %>
+
+<%= link_to "新しい順", reviews_path(new:"new") %>
+<%= link_to "古い順", reviews_path(old:"old") %>
+<%= link_to "いいね多い順", reviews_path(good:"good") %>
+
+
+<div class="tweets-container">
+  <% @reviews.each do |r| %>
+    <div class="review">
+      <%= image_tag r.image.url,style: "border-radius: 0%; width: 240px; height: 320px; object-fit:cover;" if r.image? %>
+      <p><%= r.item %></p>
+      <p><%= r.price %></p>
+      <p><%= r.comment %></p>
+      <p><%= r.user.email %></p>
+      <%= link_to "詳細へ", review_path(r.id) %>
+
+      <% if current_user == r.user %>
+        <p><%= link_to "編集する", edit_review_path(r.id)%></p>
+        <%= button_to "削除する", review_path(r.id), method: :delete %>
+      <% end %>
+    </div>
+  <% end %>
+
+</div>
+<%= link_to "LIFESTYLE一覧へ", lifestyles_path %>

@@ -1,0 +1,10 @@
+<%= "#{@ltag.name}一覧" %>              #クリックしてもらったタグの名前を一番上に表示しています。
+<br>
+<% @litirans.each do |t| %>
+    <%= link_to t.body, t %>               #index.html.erbみたいに持ってきた情報をtに代入してreviewsテーブルのbodyカラムを表示します。
+    <br>
+    <% t.ltags.each do |tag| %>
+    <%= link_to tag.name, search_lifestyles_path(ltag_id: ltag.id) %>
+    <% end %>
+<% end %>
+end

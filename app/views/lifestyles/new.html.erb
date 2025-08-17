@@ -1,0 +1,31 @@
+<h1>NEWライフスタイル</h>
+
+<%= form_for @lifestyle do |l| %>
+    <div class="field">
+      <%= l.label :画像 %>
+      <%= l.file_field :image, accept: "image/*" %>
+    </div>
+    
+    <div class = "field">
+      <%= l.label :"題名" %>
+      <%= l.text_field :title, size: 30 %>
+    </div>
+
+    <div class = "field">
+      <%= l.label :"説明" %>
+      <%= l.text_area :comment, size: "30x2" %>
+    </div>
+
+    <div class='form-group'>
+      <%= f.collection_check_boxes(:ltag_ids, Ltag.all, :id, :name) do |tag| %>
+          <div class='form-check'>
+              <%= tag.label class: 'form-check-label' do %>
+                  <%= tag.check_box class: 'form-check-input' %>
+                  <%= tag.text %>
+              <% end %>
+          </div>
+      <% end %>
+    </div>
+
+    <%= l.submit "投稿!!" %>
+<% end %>

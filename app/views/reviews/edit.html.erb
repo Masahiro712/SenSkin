@@ -1,0 +1,23 @@
+<%= form_with(model: @review, local: true, html: { multipart: true }) do |r| %>
+  <div class="field">
+    <%= r.label :image, "画像アップロード" %><br>
+    <%= r.file_field :image, accept: "image/*" %>
+  </div>
+  
+  <div class="field">
+    <%= r.label :item, "商品名" %><br>
+    <%= r.text_field :item %>
+  </div>
+
+  <div class="field">
+    <%= r.label :price, "価格" %><br>
+    <%= r.number_field :price %>
+  </div>
+
+  <div class="field">
+    <%= r.label :comment, "コメント" %><br>
+    <%= r.text_area :comment, rows: 5 %>
+  </div>
+
+  <%= r.submit "編集する" %>
+<% end %>

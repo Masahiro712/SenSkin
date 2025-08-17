@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  lifestyle: one
+  user: one
+
+two:
+  lifestyle: two
+  user: two

@@ -1,0 +1,19 @@
+<%= form_with(model: @lifestyle, local: true, html: {multipart: true}) do |l| %>
+
+  <div class="field">
+    <%= l.label :画像 %>
+    <%= l.file_field :image, accept: "image/*" %>
+  </div>
+    
+  <div class = "field">
+    <%= l.label :"題名" %>
+    <%= l.text_field :title, size: 30 %>
+  </div>
+  
+  <div class="field">
+    <%= l.label :"説明" %>
+    <%= l.text_area :comment, size: "30x2" %> 
+  </div>
+  <%= l.submit "編集する" %>
+<% end %>
+ 

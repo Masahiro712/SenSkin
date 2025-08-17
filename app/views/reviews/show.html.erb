@@ -1,0 +1,57 @@
+<h3>詳細ページ</h3>
+<div class="review">
+  <p><%= image_tag @review.image_url, size: "250x200" if @review.image? %></p>
+  <p><%= @review.item %></p>
+  <p><%= @review.price %></p>
+  
+  <p><%= link_to @review.url , reviews_path  %></p>
+  
+  <p><%= @review.comment %></p>
+  <p><%= @review.created_at %></p>
+
+  <% @review.rtags.each do |tag| %>
+    <span><%= tag.name %></span>
+  <% end %>
+
+  <% if user_signed_in? %>
+    <% if current_user.already_liked?(@review) %>
+      <%= link_to review_like_path(id: @review.id, review_id: @review.id), data: { turbo_method: :delete } do %>
+        <p>いいねを取り消す</p><%= @review.likes.count %>
+      <% end %>
+    <% else %>
+      <%= link_to review_likes_path(id: @review.id, review_id: @review.id), data: { turbo_method: :post }  do %>
+        <p>いいね</p><%= @review.likes.count %>
+      <% end %>
+    <% end %>
+  <% else %>
+    <p>いいねの数 = </p><%= @review.likes.count %>
+  <% end %>
+
+  <div class="comment-wrapper">
+    <p>コメント一覧</p>
+    <% @rcomments.each do |c| %>
+      <div>
+        <%= c.user.email unless c.user.blank? %>
+        <br>
+        <%= c.content %>
+      </div>
+        <br>
+    <% end %>
+
+    <% if user_signed_in? %>
+      <%= form_with(model: [@review, @rcomment], local: true) do |f| %>
+        <%= f.text_area :content %>
+        <%= button_tag type: "submit" do %>
+          <i class="far fa-comments"></i> コメントする
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <% if current_user == @review.user %>
+    <p><%= link_to "編集する", edit_review_path(@review.id) %></p>
+    <%= button_to "削除する", review_path(@review.id), method: :delete %>
+  <% end %>
+</div>
+
+<%= link_to "一覧に戻る", reviews_path %>

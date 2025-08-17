@@ -1,0 +1,18 @@
+<h1>プロフィール変更</h1>
+
+<%= form_with(model: @user, local: true, html: { multipart: true }) do |f| %>
+
+  <div>
+    <%= f.label :image, "アイコン" %><br>
+    <%= f.file_field :image, accept: "image/*" %>
+  </div>
+
+  <div class = "field">
+    <%= f.label :"自己紹介" %>
+    <%= f.text_area :selfintroduction, size: "30x5" %>
+  </div>
+
+  <div>
+    <%= f.submit "変更する" %>
+  </div>
+<% end %>
