@@ -2,32 +2,33 @@ Rails.application.routes.draw do
   devise_for :users
 
 
-  resources :reviews, only: [:index, :new, :create, :show, :edit, :update, :destroy] do
+  resources :reviews do
     resources :likes, only: [:create, :destroy]
-    member do
-      get 'toppage'
-      get 'search'
-    end
+    resources :rcomments, only: [:create]
   end
+
+  get "toppage" => "reviews#toppage", as: :toppage_review
+  resources :rtags do
+    get 'reviews', to: 'reviews#search'
+  end
+
+  resources :lifestyles do
+    resources :likeas, only: [:create, :destroy]
+    resources :lcomments, only: [:create]
+  end
+
+  resources :ltags do
+    get 'lifestyles', to: 'lifestyles#search'
+  end
+
+  get "lifestyles/search/:id" => "lifestyles#search", as: :search_lifestyle
+
+  resources :users, only: [:edit, :update] 
+
+  get "users/mypage/:id" => "users#mypage", as: :mypage_user
 
   root 'reviews#toppage'
 
-  resources :lifestyles, only: [:index, :new, :create, :show, :edit, :update, :destroy] do
-    resources :likeas, only: [:create, :destroy]
-    member do
-      get 'search'
-    end
-  end
-
-  resources :users, only: [:edit, :update] do
-    member do
-      get 'mypage'
-    end
-  end
-
-  resources :rcomments, only: [:create]
-
-  resources :lcomments, only: [:create]
   
 
 end

@@ -11,7 +11,7 @@ class User < ApplicationRecord
   has_many :liked_reviews, through: :likes, source: :review
 
   has_many :likeas, dependent: :destroy
-  has_many :likead_lifesyles, through: :likeas, source: :lifestyle
+  has_many :likead_lifestyles, through: :likeas, source: :lifestyle
   #コメント
   has_many :rcomments, dependent: :destroy
   has_many :lcomments, dependent: :destroy
@@ -23,5 +23,7 @@ class User < ApplicationRecord
   def already_likead?(lifestyle)
     self.likeas.exists?(lifestyle_id: lifestyle.id)
   end
+
+  validates :name, presence: true
 
 end

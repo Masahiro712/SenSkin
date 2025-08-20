@@ -1,30 +1,59 @@
 <h1>ITEM</h1>
 <h3>一覧ページ</h3>
-<% if user_signed_in? %>
-  <%= link_to "新規投稿へ", new_review_path %>
-<% end %>
+<div class="junban">
+  <% if user_signed_in? %>
+    <%= link_to "新規投稿へ", new_review_path %>
+  <% end %>
+  <%= link_to "新しい順", reviews_path(new:"new") %>
+  <%= link_to "古い順", reviews_path(old:"old") %>
+  <%= link_to "いいね多い順", reviews_path(good:"good") %>
+</div>
+<div class="kensaku">
+  <%= form_tag({controller:"reviews",action:"index"}, method: :get) do %>
+    <% Rtag.all.each do |t| %>
+      <li><%= check_box :rtag_ids, t.name %><%= t.name %></li>
+    <% end %>
+    <%= text_field_tag :search %>
+    <%= submit_tag '検索する'  %>
+  <% end %>
+</div>
 
-<%= link_to "新しい順", reviews_path(new:"new") %>
-<%= link_to "古い順", reviews_path(old:"old") %>
-<%= link_to "いいね多い順", reviews_path(good:"good") %>
-
-
-<div class="tweets-container">
+<div class="card1-grid">
   <% @reviews.each do |r| %>
-    <div class="review">
-      <%= image_tag r.image.url,style: "border-radius: 0%; width: 240px; height: 320px; object-fit:cover;" if r.image? %>
+    <div class="card1">
+      <%= image_tag(r.image.present? ? r.image.url : "noimage.jpg",style: "border-radius: 0%; width: 240px; height: 320px; object-fit:cover;") %>
       <p><%= r.item %></p>
       <p><%= r.price %></p>
       <p><%= r.comment %></p>
-      <p><%= r.user.email %></p>
-      <%= link_to "詳細へ", review_path(r.id) %>
-
-      <% if current_user == r.user %>
-        <p><%= link_to "編集する", edit_review_path(r.id)%></p>
-        <%= button_to "削除する", review_path(r.id), method: :delete %>
+      <br>
+      <%= link_to image_tag(r.user.image.present? ? r.user.image.url : "アイコン_unknown.png", style: "border-radius: 50%; width: 50px; height: 50px; object-fit:cover;"), mypage_user_path(r.user.id) %>
+      <%= r.user.name %><br>
+      <% if user_signed_in? %>
+        <% if current_user.already_liked?(r) %>
+          <%= link_to review_like_path(id: r.id, review_id: r.id), data: { turbo_method: :delete } do %>
+            <i class="fas fa-heart"></i><%= r.likes.count %>
+          <% end %>
+        <% else %>
+          <%= link_to review_likes_path(id: r.id, review_id: r.id), data: { turbo_method: :post }  do %>
+            <i class="far fa-heart"></i><%= r.likes.count %>
+          <% end %>
+        <% end %>
+      <% else %>
+        <i class="far fa-heart"></i><%= r.likes.count %>
       <% end %>
+      <div class="hashtag">
+        <% r.rtags.each do |rtag| %>
+          <%= link_to rtag.name, rtag_reviews_path(rtag_id: rtag.id) %>
+        <% end %>
+      </div>
+      <div class="syousai">
+        <%= link_to "詳細へ", review_path(r.id) %>
+      </div>
+
     </div>
   <% end %>
 
 </div>
-<%= link_to "LIFESTYLE一覧へ", lifestyles_path %>
+<div class="kirikae">
+  <%= link_to "LIFESTYLE一覧へ", lifestyles_path %>
+</div>

@@ -3,7 +3,7 @@ class RcommentsController < ApplicationController
 
   def create
     review = Review.find(params[:review_id])
-    rcomment = review.comments.build(rcomment_params) #buildを使い、contentとreview_idの二つを同時に代入
+    rcomment = review.rcomments.build(rcomment_params) #buildを使い、contentとreview_idの二つを同時に代入
     rcomment.user_id = current_user.id
     if rcomment.save
       flash[:success] = "コメントしました"

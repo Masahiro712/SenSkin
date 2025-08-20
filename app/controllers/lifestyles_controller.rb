@@ -1,8 +1,37 @@
 class LifestylesController < ApplicationController
-    def index
-        @lifestyles = Lifestyle.all
+    def index  
+      @lifestyles = Lifestyle.all
+      @lifestyles = @lifestyles.where("title LIKE ? ",'%' + params[:search] + '%') if params[:search].present?
+      @rtag = Ltag.select("name", "id")
+      @lifestyles = @lifestyles.where("title LIKE ? ",'%' + params[:search] + '%') if params[:search].present?
+      if params[:ltag_ids].present?
+        lifestyles_ids = []
+        params[:ltag_ids].each do |key, value|
+          if value == "1"
+            Ltag.find_by(name: key).lifestyles.each do |p|
+              lifestyles_ids << p.id
+            end
+          end
+        end
+        lifestyles_ids = lifestyles_ids.uniq
+        #キーワードとタグのAND検索
+        @lifestyles = @lifestyles.where(id: lifestyles_ids) if lifestyles_ids.present?
+      elsif params[:new].present?
+          @lifestyles = Lifestyle.sort_new
+      elsif params[:old].present?
+          @lifestyles = Lifestyle.sort_old
+      elsif params[:good].present?
+          @lifestyles = Lifestyle.includes(:liked_users).sort {|a,b| b.liked_users.size <=> a.liked_users.size}
+      end
 
-        @lranking = Lifestyle.includes(:liked_users).sort {|a,b| b.liked_users.size <=> a.liked_users.size}
+      if params[:rtag]
+        Ltag.create(name: params[:rtag])
+      end
+  
+      @ranking = Lifestyle.includes(:liked_users).sort {|a,b| b.liked_users.size <=> a.liked_users.size}
+      @hosi = Lifestyle.order(overall: :desc)
+      # @tyotto = @lifestyles.page(params[:page]).per(100)
+      @saisin = Lifestyle.sort_new.first(3)
     end
 
     def new

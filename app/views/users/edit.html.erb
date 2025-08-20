@@ -2,15 +2,12 @@
 
 <%= form_with(model: @user, local: true, html: { multipart: true }) do |f| %>
 
-  <div>
     <%= f.label :image, "アイコン" %><br>
-    <%= f.file_field :image, accept: "image/*" %>
-  </div>
+    <%= f.file_field :image, accept: "image/*" %><br>
 
-  <div class = "field">
-    <%= f.label :"自己紹介" %>
-    <%= f.text_area :selfintroduction, size: "30x5" %>
-  </div>
+    <%= f.label :"自己紹介" %><br>
+    <%= f.text_area :selfintroduction, size: "30x5" %><br>
+
 
   <div>
     <%= f.submit "変更する" %>

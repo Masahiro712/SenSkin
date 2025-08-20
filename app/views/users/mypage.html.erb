@@ -1,7 +1,154 @@
 <h1>マイページ</h1>
-<%= image_tag(@user.image.present? ? @user.image.url : "アイコン_unknown.png", style: "max-width: 250px; height: auto;") %>
-<h3>自己紹介</h3>
-<p><%= @user.selfintroduction %></p>
-<% if current_user == @user %>
-  <p><%= link_to "プロフィール編集", edit_user_path(@user.id) %></p>
-<% end %>
+<div class="my">
+  <div class="profile">
+    <%= image_tag(@user.image.present? ? @user.image.url : "アイコン_unknown.png", style: "border-radius: 20%; width: 300px; height: 300px; object-fit:cover;") %>
+    <p><%= @user.name %></p>
+    <h3>自己紹介</h3>
+    <p><%= @user.selfintroduction %></p>
+    <% if user_signed_in? %>
+      <% if current_user.id == @user.id %>
+        <p><%= link_to "プロフィール編集", edit_user_path(@user.id) %></p>
+      <% end %>
+    <% end %>
+  </div>
+
+  <h3>ユーザーのITEM投稿一覧</h3>
+  <div class="card1-grid">
+    <% @user.reviews.each do |r| %>
+      <div class="card1">
+        <%= image_tag(r.image.present? ? r.image.url : "noimage.jpg",style: "border-radius: 0%; width: 240px; height: 320px; object-fit:cover;") %>
+        <p><%= r.item %></p>
+        <p><%= r.price %></p>
+        <p><%= r.comment %></p>
+        <%= link_to image_tag(r.user.image.present? ? r.user.image.url : "アイコン_unknown.png", style: "border-radius: 50%; width: 50px; height: 50px; object-fit:cover;"), mypage_user_path(r.user.id) %>
+        <%= r.user.name %><br>
+        <% if user_signed_in? %>
+          <% if current_user.already_liked?(r) %>
+            <%= link_to review_like_path(id: r.id, review_id: r.id), data: { turbo_method: :delete } do %>
+              <i class="fas fa-heart"></i><%= r.likes.count %>
+            <% end %>
+          <% else %>
+            <%= link_to review_likes_path(id: r.id, review_id: r.id), data: { turbo_method: :post }  do %>
+              <i class="far fa-heart"></i><%= r.likes.count %>
+            <% end %>
+          <% end %>
+        <% else %>
+          <i class="far fa-heart"></i><%= r.likes.count %>
+        <% end %>
+        <div class="hashtag">
+          <% r.rtags.each do |rtag| %>
+            <%= link_to rtag.name, rtag_reviews_path(rtag_id: rtag.id) %>
+          <% end %>
+        </div>
+        <div class="syousai">
+          <%= link_to "詳細へ", review_path(r.id) %>
+        </div>
+
+      </div>
+    <% end %>
+  </div>
+
+  <h3>ユーザーがいいねしたITEM投稿一覧</h3>
+  <div class="card1-grid">
+    <% @user.liked_reviews.each do |r| %>
+      <div class="card1">
+        <%= image_tag(r.image.present? ? r.image.url : "noimage.jpg",style: "border-radius: 0%; width: 240px; height: 320px; object-fit:cover;") %>
+        <p><%= r.item %></p>
+        <p><%= r.price %></p>
+        <p><%= r.comment %></p>
+        <br>
+        <%= link_to image_tag(r.user.image.present? ? r.user.image.url : "アイコン_unknown.png", style: "border-radius: 50%; width: 50px; height: 50px; object-fit:cover;"), mypage_user_path(r.user.id) %>
+        <%= r.user.name %><br>
+        <% if user_signed_in? %>
+          <% if current_user.already_liked?(r) %>
+            <%= link_to review_like_path(id: r.id, review_id: r.id), data: { turbo_method: :delete } do %>
+              <i class="fas fa-heart"></i><%= r.likes.count %>
+            <% end %>
+          <% else %>
+            <%= link_to review_likes_path(id: r.id, review_id: r.id), data: { turbo_method: :post }  do %>
+              <i class="far fa-heart"></i><%= r.likes.count %>
+            <% end %>
+          <% end %>
+        <% else %>
+          <i class="far fa-heart"></i><%= r.likes.count %>
+        <% end %>
+        <div class="hashtag">
+          <% r.rtags.each do |rtag| %>
+            <%= link_to rtag.name, rtag_reviews_path(rtag_id: rtag.id) %>
+          <% end %>
+        </div>
+        <div class="syousai">
+          <%= link_to "詳細へ", review_path(r.id) %>
+        </div>
+
+      </div>
+    <% end %>
+  </div>
+  <h3>ユーザーのLIFESTYLE投稿一覧</h3>
+  <div class="card1-grid">
+    <% @user.lifestyles.each do |l| %>
+      <div class="card1">
+        <%= image_tag(l.image.present? ? l.image.url : "noimage.jpg",style: "border-radius: 0%; width: 240px; height: 320px; object-fit:cover;") %>
+        <p><%= l.title %></p>
+        <p><%= l.comment %></p>
+        <%= link_to image_tag(l.user.image.present? ? l.user.image.url : "アイコン_unknown.png", style: "border-radius: 50%; width: 50px; height: 50px; object-fit:cover;"), mypage_user_path(l.user.id) %>
+        <%= l.user.name %>
+        <% if user_signed_in? %>
+          <% if current_user.already_likead?(l) %>
+            <%= link_to lifestyle_likea_path(id: l.id, lifestyle_id: l.id), data: { turbo_method: :delete } do %>
+              <i class="far fa-heart"></i><%= l.likeas.count %>
+            <% end %>
+          <% else %>
+            <%= link_to lifestyle_likeas_path(id: l.id, lifestyle_id: l.id), data: { turbo_method: :post }  do %>
+              <i class="far fa-heart"></i><%= l.likeas.count %>
+            <% end %>
+          <% end %>
+        <% else %>
+          <i class="far fa-heart"></i><%= l.likeas.count %>
+        <% end %>
+        <div class="hashtag">
+          <% l.ltags.each do |ltag| %>
+            <%= link_to ltag.name, ltag_lifestyles_path(ltag_id: ltag.id) %>
+          <% end %>
+        </div>
+        <div class="syousai">
+          <%= link_to "詳細へ", lifestyle_path(l.id) %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <h3>ユーザーがいいねしたLIFESTYLE投稿一覧</h3>
+  <div class="card1-grid">
+    <% @user.likead_lifestyles.each do |l| %>
+      <div class="card1">
+        <%= image_tag(l.image.present? ? l.image.url : "noimage.jpg",style: "border-radius: 0%; width: 240px; height: 320px; object-fit:cover;") %>
+        <p><%= l.title %></p>
+        <p><%= l.comment %></p>
+        <%= link_to image_tag(l.user.image.present? ? l.user.image.url : "アイコン_unknown.png", style: "border-radius: 50%; width: 50px; height: 50px; object-fit:cover;"), mypage_user_path(l.user.id) %>
+        <%= l.user.name %>
+        <% if user_signed_in? %>
+          <% if current_user.already_likead?(l) %>
+            <%= link_to lifestyle_likea_path(id: l.id, lifestyle_id: l.id), data: { turbo_method: :delete } do %>
+              <i class="far fa-heart"></i><%= l.likeas.count %>
+            <% end %>
+          <% else %>
+            <%= link_to lifestyle_likeas_path(id: l.id, lifestyle_id: l.id), data: { turbo_method: :post }  do %>
+              <i class="far fa-heart"></i><%= l.likeas.count %>
+            <% end %>
+          <% end %>
+        <% else %>
+          <i class="far fa-heart"></i><%= l.likeas.count %>
+        <% end %>
+        <div class="hashtag">
+          <% l.ltags.each do |ltag| %>
+            <%= link_to ltag.name, ltag_lifestyles_path(ltag_id: ltag.id) %>
+          <% end %>
+        </div>
+        <div class="syousai">
+          <%= link_to "詳細へ", lifestyle_path(l.id) %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

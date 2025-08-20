@@ -2,14 +2,123 @@
  * This is a manifest file that'll be compiled into application.css, which will include all the files
  * listed below.
  *
- * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
  * vendor/assets/stylesheets directory can be referenced here using a relative path.
  *
  * You're free to add application-wide styles to this file and they'll appear at the bottom of the
- * compiled file so the styles you add here take precedence over styles defined in any other CSS
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
  *= require_tree .
  *= require_self
  */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+  height: 56px;
+  background-color: #DDDDDD;
+  border-bottom: 1px solid #eee;
+}
+
+.logo-img {
+  width: 50px;   /* 適宜調整 */
+  height: auto;
+  display: block;
+}
+/* 視覚的に非表示（フォーカスは可） */
+.drawer_hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; border: 0; padding: 0;
+  clip: rect(0 0 0 0); clip-path: inset(50%);
+  overflow: hidden; white-space: nowrap;
+}
+
+/* ハンバーガー */
+.drawer_open {
+  display: flex;
+  height: 44px; width: 44px;
+  justify-content: center; align-items: center;
+  position: relative; z-index: 100;
+  cursor: pointer;
+}
+.drawer_open span,
+.drawer_open span:before,
+.drawer_open span:after {
+  content: '';
+  display: block;
+  height: 2px; width: 24px;
+  border-radius: 2px;
+  background: #333;
+  transition: 0.3s ease;
+  position: absolute;
+}
+.drawer_open span:before { bottom: 7px; }
+.drawer_open span:after  { top: 7px; }
+
+/* チェック時のアイコン変化 */
+#drawer_input:checked ~ .drawer_open span { background: transparent; }
+#drawer_input:checked ~ .drawer_open span::before {
+  bottom: 0; transform: rotate(45deg);
+}
+#drawer_input:checked ~ .drawer_open span::after  {
+  top: 0; transform: rotate(-45deg);
+}
+
+/* オーバーレイ */
+.nav_bg {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.32);
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s;
+  z-index: 90;
+}
+#drawer_input:checked ~ .nav_bg {
+  opacity: 1; pointer-events: auto;
+}
+
+/* ドロワー本体 */
+.nav_content {
+  position: fixed; inset: 0 0 0 auto; /* 右から */
+  width: min(80vw, 320px);
+  transform: translateX(100%);
+  background-color: #DDDDDD; z-index: 99;
+  transition: transform .3s ease;
+  padding: 72px 16px 24px;
+  box-shadow: -8px 0 24px rgba(0,0,0,.08);
+}
+#drawer_input:checked ~ .nav_content { transform: translateX(0); }
+
+/* メニュー */
+.nav_list { list-style: none; margin: 0; padding: 0; }
+.nav_item + .nav_item { margin-top: 12px; }
+.nav_item a {
+  display: block;
+  padding: 12px 8px;
+  text-decoration: none;
+  color: #222;
+  border-radius: 10px;
+}
+.nav_item a:hover,
+.nav_item a:focus { background: #f4f6f8; outline: none; }
+
+/* メニュー開時のスクロール抑止（ラッパーに適用） */
+.nav_wrapper { position: relative; }
+#drawer_input:checked ~ .nav_wrapper { overflow: hidden; height: 100svh; }
+
+/* デスクトップ表示（横並び・ドロワー無効） */
+@media (min-width: 768px) {
+  .drawer_open { display: none; }
+  .nav_bg { display: none; }
+  .nav_content {
+    position: static; transform: none; width: auto;
+    box-shadow: none; padding: 0;
+  }
+  .nav_list { display: flex; gap: 8px; }
+  .nav_item + .nav_item { margin-top: 0; }
+  .nav_item a { padding: 10px 12px; }
+}

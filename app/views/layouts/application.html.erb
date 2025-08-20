@@ -6,29 +6,54 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <script src="https://kit.fontawesome.com/e118503a39.js" crossorigin="anonymous"></script>
+
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <header>
-      <h1>SENSKIN</h1>
-      <div class="header-list">
-        <ul>
-          <% if user_signed_in? %>
-            <li><%= button_to 'ログアウト', destroy_user_session_path, method: :delete %></li>
-            <li><%= link_to "マイページ", mypage_user_path(current_user.id) %></li>
-          <% else %>
-            <li><%= link_to "新規登録", new_user_registration_path %></li>
-            <li><%= link_to "ログイン", new_user_session_path %></li>
-          <% end %>
-          <li><%= link_to "ITEM投稿一覧", reviews_path %></li>
-          <li><%= link_to "LIFESTYLE投稿一覧", lifestyles_path %></li>
-        </ul>
+    <header class="header">
+      <div class="logo">
+        <%= image_tag "senskin_logo.png",alt: "SenSkin", class: "logo-img" %>
       </div>
+
+      <!-- ハンバーガー：チェックボックス＋ラベル -->
+      <input id="drawer_input" class="drawer_hidden" type="checkbox">
+      <label for="drawer_input" class="drawer_open" aria-label="メニューを開閉">
+        <span></span>
+      </label>
+
+      <!-- オーバーレイ（クリックで閉じる） -->
+      <label for="drawer_input" class="nav_bg" aria-hidden="true"></label>
+
+      <!-- ナビ本体 -->
+      <nav id="mainnav" class="nav_content" aria-label="グローバルナビゲーション">
+        <ul class="nav_list">
+          <li class="nav_item"><%= link_to "トップページ", toppage_review_path %></li>
+
+          <% if user_signed_in? %>
+            <li class="nav_item">
+              <%= link_to "ログアウト",
+                  destroy_user_session_path,
+                  data: { turbo_method: :delete, turbo_confirm: "ログアウトしますか？" } %>
+            </li>
+            <li class="nav_item"><%= link_to "マイページ", mypage_user_path(current_user.id) %></li>
+          <% else %>
+            <li class="nav_item"><%= link_to "新規登録", new_user_registration_path %></li>
+            <li class="nav_item"><%= link_to "ログイン", new_user_session_path %></li>
+          <% end %>
+
+          <li class="nav_item"><%= link_to "ITEM投稿一覧", reviews_path %></li>
+          <li class="nav_item"><%= link_to "LIFESTYLE投稿一覧", lifestyles_path %></li>
+        </ul>
+      </nav>
     </header>
-    <main>
-      <%= yield %>
-    </main>
+
+    <!-- メニュー開時にスクロールを止めるためのラッパー -->
+    <div class="nav_wrapper">
+      <main>
+        <%= yield %>
+      </main>
+    </div>
   </body>
 </html>

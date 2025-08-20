@@ -1,1 +1,53 @@
-<h>トップページ</h>
+<section class="hero">
+  <div class="hero__inner">
+    <div class="hero__copy">
+      <div class="hero__title">肌が弱い人のために</div>
+      <p class="hero__sub">
+        私たちのサイトは、肌の弱い人たちのためのコミュニティです。<br>
+        自分のスキンケアやライフスタイルの工夫を共有してください。
+      </p>
+    </div>
+    <div class="hero__thumb">
+      <%= image_tag "senskin_logo.png", alt: "Hero image" %>
+    </div>
+  </div>
+</section>
+<main class="section">
+  <div class="section__inner">
+    <h2 class="section__title">投稿</h2>
+    <div class="card1-grid">
+      <% @rnews.each do |r| %>
+        <div class="card1">
+          <%= image_tag r.image.url,style: "border-radius: 0%; width: 240px; height: 320px; object-fit:cover;" if r.image? %>
+          <p><%= r.item %></p>
+          <p><%= r.price %></p>
+          <p><%= r.comment %></p>
+          <br>
+          <%= link_to image_tag(r.user.image.present? ? r.user.image.url : "アイコン_unknown.png", style: "border-radius: 50%; width: 50px; height: 50px; object-fit:cover;"), mypage_user_path(r.user.id) %>
+          <p><%= r.user.name %></p>
+          <div class="syousai">
+            <%= link_to "詳細へ", review_path(r.id) %>
+          </div>
+ 
+        </div>
+      <% end %>
+    </div>
+
+    <div class="card1-grid">  
+      <% @lnews.each do |r| %>
+        <div class="card1">
+          <%= image_tag(r.image.present? ? r.image.url : "noimage.jpg",style: "border-radius: 0%; width: 240px; height: 320px; object-fit:cover;") %>
+          <p><%= r.title %></p>
+          <p><%= r.comment %></p>
+          <br>
+          <%= link_to image_tag(r.user.image.present? ? r.user.image.url : "アイコン_unknown.png", style: "border-radius: 50%; width: 50px; height: 50px; object-fit:cover;"), mypage_user_path(r.user.id) %>
+          <p><%= r.user.name %></p>
+          <div class="syousai">
+            <%= link_to "詳細へ", lifestyle_path(r.id) %>
+          </div>
+ 
+        </div>
+      <% end %>
+    </div>
+  </div>
+</main>

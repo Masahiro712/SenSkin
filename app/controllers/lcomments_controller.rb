@@ -3,7 +3,7 @@ class LcommentsController < ApplicationController
 
   def create
     lifestyle = Lifestyle.find(params[:lifestyle_id])
-    lcomment = Lifestyle.lcomments.build(lcomment_params) #buildを使い、contentとreview_idの二つを同時に代入
+    lcomment = lifestyle.lcomments.build(lcomment_params) #buildを使い、contentとreview_idの二つを同時に代入
     lcomment.user_id = current_user.id
     if lcomment.save
       flash[:success] = "コメントしました"

@@ -4,28 +4,35 @@ class ReviewsController < ApplicationController
     @reviews = Review.all
     @reviews = @reviews.where("item LIKE ? ",'%' + params[:search] + '%') if params[:search].present?
     @rtag = Rtag.select("name", "id")
-    @rnews = Review.sort_new
+    @reviews = @reviews.where("item LIKE ? ",'%' + params[:search] + '%') if params[:search].present?
     if params[:rtag_ids].present?
-      review_ids = []
-      params[:rtag_ids].each do |key, value| 
-      if value == "1"
-        Rtag.find_by(name: key).reviews.each do |p| 
-          review_ids << p.id
+      reviews_ids = []
+      params[:rtag_ids].each do |key, value|
+        if value == "1"
+          Rtag.find_by(name: key).reviews.each do |p|
+            reviews_ids << p.id
+          end
         end
       end
+      reviews_ids = reviews_ids.uniq
+      #キーワードとタグのAND検索
+      @reviews = @reviews.where(id: reviews_ids) if reviews_ids.present?
+    elsif params[:new].present?
+        @reviews = Review.sort_new
+    elsif params[:old].present?
+        @reviews = Review.sort_old
+    elsif params[:good].present?
+        @reviews = Review.includes(:liked_users).sort {|a,b| b.liked_users.size <=> a.liked_users.size}
     end
-      elsif params[:new].present?
-            @reviews = Review.sort_new
-        elsif params[:old].present?
-            @reviews = Review.sort_old
-        elsif params[:good].present?
-            @reviews = Review.includes(:liked_users).sort {|a,b| b.liked_users.size <=> a.liked_users.size}
-        else
-            @reviews = Review.all
-      end
-      if params[:rtag]
-        Rtag.create(name: params[:rtag])
-      end
+
+    if params[:rtag]
+      Rtag.create(name: params[:rtag])
+    end
+
+    @ranking = Review.includes(:liked_users).sort {|a,b| b.liked_users.size <=> a.liked_users.size}
+    @hosi = Review.order(overall: :desc)
+    # @tyotto = @reviews.page(params[:page]).per(100)
+    @saisin = Review.sort_new.first(3)
   end
 
     def new
@@ -78,6 +85,11 @@ class ReviewsController < ApplicationController
       @rtag_list = Rtag.all               # こっちの投稿一覧表示ページでも全てのタグを表示するために、タグを全取得
       @rtag = Rtag.find(params[:rtag_id])  # クリックしたタグを取得
       @ritirans = @rtag.reviews.all        # クリックしたタグに紐付けられた投稿を全て表示
+    end
+
+    def toppage
+      @rnews = Review.sort_new.first(3)
+      @lnews = Lifestyle.sort_new.first(3)
     end
 
     private

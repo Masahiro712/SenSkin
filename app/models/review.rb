@@ -15,4 +15,8 @@ class Review < ApplicationRecord
     #コメント
     has_many :rcomments, dependent: :destroy
 
+    scope :sort_good, ->{order(like: :desc)}
+    scope :sort_new, ->{order(created_at: :desc)}
+    scope :sort_old, ->{order(created_at: :asc)}
+
 end
