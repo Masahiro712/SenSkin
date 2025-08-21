@@ -36,7 +36,7 @@
     <div class="card1-grid">  
       <% @lnews.each do |r| %>
         <div class="card1">
-          <%= image_tag(r.image.present? ? r.image.url : "noimage.jpg",style: "border-radius: 0%; width: 240px; height: 320px; object-fit:cover;") %>
+          <%= image_tag(r.image.present? ? r.image.url : "noimage.jpeg",style: "border-radius: 0%; width: 240px; height: 320px; object-fit:cover;") %>
           <p><%= r.title %></p>
           <p><%= r.comment %></p>
           <br>
